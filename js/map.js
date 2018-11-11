@@ -7,9 +7,34 @@
 document.querySelector(".map").classList.remove("map--faded");
 
 
-//Получение случайного числа от 1 до 8
+//Случайное число в диапазоне
 var getRandom = function (min, max) {
   return Math.random() * (max - min) + min;
+};
+
+//Случайная длина массива в диапазоне
+var getRandomLength = function (array, min, max) {
+  array.length = Math.round(getRandom(min, max));
+
+  return array;
+};
+
+//Перемешивание элементов массива
+var shuffle = function (array) {
+  for (var i = array.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var temp = array[i];
+      array[i] = array[j];
+      array[j] = temp;
+  }
+  return array;
+};
+
+//Создание независимой копии массива (без дочерних "объектов")
+var cloneArray = function(array) {
+  var clone = array.slice(0);
+
+  return clone;
 };
 
 //Заголовки объявлений
@@ -56,32 +81,190 @@ var longingFeatures = [
   "conditioner"
 ];
 
-//longingFeatures.length = Math.ceil(getRandom(1, 6));
+//Фотографии жилья
+var lodgingPhotos = [
+  "http://o0.github.io/assets/images/tokyo/hotel1.jpg",
+  "http://o0.github.io/assets/images/tokyo/hotel2.jpg",
+  "http://o0.github.io/assets/images/tokyo/hotel3.jpg"
+];
 
 //Объявления
 var lodgingOffers = [
   {
     author: {
+      avatar: "img/avatars/user0" + Math.round(getRandom(1, 8)) + ".png"
+    },
+    offer: {
+      title: offerTitles[Math.floor(getRandom(0, 8))],
+      address: "" + Math.ceil(getRandom(1, 1000)) + ", " + Math.ceil(getRandom(1, 1000)) + "",
+      price: Math.ceil(getRandom(1, 1000000)),
+      type: longingTypes[Math.floor(getRandom(0, 4))],
+      rooms: Math.round(getRandom(1, 5)),
+      guests: Math.round(getRandom(1, 10)),
+      checkin: checkinTime[Math.floor(getRandom(0, 3))],
+      checkout: checkoutTime[Math.floor(getRandom(0, 3))],
+      features: getRandomLength(cloneArray(longingFeatures), 1, 6),
+      description: "",
+      photos: shuffle(cloneArray(lodgingPhotos))
+    },
+    location: {
+      x: Math.ceil(getRandom(1, 1200)),
+      y: Math.ceil(getRandom(130, 630))
+    }
+  },
+  {
+    author: {
       avatar: "img/avatars/user0" + Math.ceil(getRandom(1, 8)) + ".png"
     },
     offer: {
-      title: offerTitles[Math.floor(getRandom(1, 8))],
+      title: offerTitles[Math.floor(getRandom(0, 8))],
       address: "" + Math.ceil(getRandom(1, 1000)) + ", " + Math.ceil(getRandom(1, 1000)) + "",
-      price: Math.ceil(getRandom(0.1, 1000000) + 999),
-      type: longingTypes[Math.floor(getRandom(1, 4))],
-      rooms: Math.ceil(getRandom(1, 5)),
-      guests: Math.ceil(getRandom(1, 10)),
-      checkin: checkinTime[Math.floor(getRandom(1, 3))],
-      checkout: checkoutTime[Math.floor(getRandom(1, 3))],
-      features: longingFeatures
+      price: Math.ceil(getRandom(1, 1000000)),
+      type: longingTypes[Math.floor(getRandom(0, 4))],
+      rooms: Math.round(getRandom(1, 5)),
+      guests: Math.round(getRandom(1, 10)),
+      checkin: checkinTime[Math.floor(getRandom(0, 3))],
+      checkout: checkoutTime[Math.floor(getRandom(0, 3))],
+      features: getRandomLength(cloneArray(longingFeatures), 1, 6),
+      description: "",
+      photos: shuffle(cloneArray(lodgingPhotos))
     },
+    location: {
+      x: Math.ceil(getRandom(1, 1200)),
+      y: Math.ceil(getRandom(130, 630))
+    }
   },
-  {},
-  {},
-  {},
-  {},
-  {},
-  {},
-  {}
+  {
+    author: {
+      avatar: "img/avatars/user0" + Math.ceil(getRandom(1, 8)) + ".png"
+    },
+    offer: {
+      title: offerTitles[Math.floor(getRandom(0, 8))],
+      address: "" + Math.ceil(getRandom(1, 1000)) + ", " + Math.ceil(getRandom(1, 1000)) + "",
+      price: Math.ceil(getRandom(1, 1000000)),
+      type: longingTypes[Math.floor(getRandom(0, 4))],
+      rooms: Math.round(getRandom(1, 5)),
+      guests: Math.round(getRandom(1, 10)),
+      checkin: checkinTime[Math.floor(getRandom(0, 3))],
+      checkout: checkoutTime[Math.floor(getRandom(0, 3))],
+      features: getRandomLength(cloneArray(longingFeatures), 1, 6),
+      description: "",
+      photos: shuffle(cloneArray(lodgingPhotos))
+    },
+    location: {
+      x: Math.ceil(getRandom(1, 1200)),
+      y: Math.ceil(getRandom(130, 630))
+    }
+  },
+  {
+    author: {
+      avatar: "img/avatars/user0" + Math.ceil(getRandom(1, 8)) + ".png"
+    },
+    offer: {
+      title: offerTitles[Math.floor(getRandom(0, 8))],
+      address: "" + Math.ceil(getRandom(1, 1000)) + ", " + Math.ceil(getRandom(1, 1000)) + "",
+      price: Math.ceil(getRandom(1, 1000000)),
+      type: longingTypes[Math.floor(getRandom(0, 4))],
+      rooms: Math.round(getRandom(1, 5)),
+      guests: Math.round(getRandom(1, 10)),
+      checkin: checkinTime[Math.floor(getRandom(0, 3))],
+      checkout: checkoutTime[Math.floor(getRandom(0, 3))],
+      features: getRandomLength(cloneArray(longingFeatures), 1, 6),
+      description: "",
+      photos: shuffle(cloneArray(lodgingPhotos))
+    },
+    location: {
+      x: Math.ceil(getRandom(1, 1200)),
+      y: Math.ceil(getRandom(130, 630))
+    }
+  },
+  {
+    author: {
+      avatar: "img/avatars/user0" + Math.ceil(getRandom(1, 8)) + ".png"
+    },
+    offer: {
+      title: offerTitles[Math.floor(getRandom(0, 8))],
+      address: "" + Math.ceil(getRandom(1, 1000)) + ", " + Math.ceil(getRandom(1, 1000)) + "",
+      price: Math.ceil(getRandom(1, 1000000)),
+      type: longingTypes[Math.floor(getRandom(0, 4))],
+      rooms: Math.round(getRandom(1, 5)),
+      guests: Math.round(getRandom(1, 10)),
+      checkin: checkinTime[Math.floor(getRandom(0, 3))],
+      checkout: checkoutTime[Math.floor(getRandom(0, 3))],
+      features: getRandomLength(cloneArray(longingFeatures), 1, 6),
+      description: "",
+      photos: shuffle(cloneArray(lodgingPhotos))
+    },
+    location: {
+      x: Math.ceil(getRandom(1, 1200)),
+      y: Math.ceil(getRandom(130, 630))
+    }
+  },
+  {
+    author: {
+      avatar: "img/avatars/user0" + Math.ceil(getRandom(1, 8)) + ".png"
+    },
+    offer: {
+      title: offerTitles[Math.floor(getRandom(0, 8))],
+      address: "" + Math.ceil(getRandom(1, 1000)) + ", " + Math.ceil(getRandom(1, 1000)) + "",
+      price: Math.ceil(getRandom(1, 1000000)),
+      type: longingTypes[Math.floor(getRandom(0, 4))],
+      rooms: Math.round(getRandom(1, 5)),
+      guests: Math.round(getRandom(1, 10)),
+      checkin: checkinTime[Math.floor(getRandom(0, 3))],
+      checkout: checkoutTime[Math.floor(getRandom(0, 3))],
+      features: getRandomLength(cloneArray(longingFeatures), 1, 6),
+      description: "",
+      photos: shuffle(cloneArray(lodgingPhotos))
+    },
+    location: {
+      x: Math.ceil(getRandom(1, 1200)),
+      y: Math.ceil(getRandom(130, 630))
+    }
+  },
+  {
+    author: {
+      avatar: "img/avatars/user0" + Math.ceil(getRandom(1, 8)) + ".png"
+    },
+    offer: {
+      title: offerTitles[Math.floor(getRandom(0, 8))],
+      address: "" + Math.ceil(getRandom(1, 1000)) + ", " + Math.ceil(getRandom(1, 1000)) + "",
+      price: Math.ceil(getRandom(1, 1000000)),
+      type: longingTypes[Math.floor(getRandom(0, 4))],
+      rooms: Math.round(getRandom(1, 5)),
+      guests: Math.round(getRandom(1, 10)),
+      checkin: checkinTime[Math.floor(getRandom(0, 3))],
+      checkout: checkoutTime[Math.floor(getRandom(0, 3))],
+      features: getRandomLength(cloneArray(longingFeatures), 1, 6),
+      description: "",
+      photos: shuffle(cloneArray(lodgingPhotos))
+    },
+    location: {
+      x: Math.ceil(getRandom(1, 1200)),
+      y: Math.ceil(getRandom(130, 630))
+    }
+  },
+  {
+    author: {
+      avatar: "img/avatars/user0" + Math.ceil(getRandom(1, 8)) + ".png"
+    },
+    offer: {
+      title: offerTitles[Math.floor(getRandom(0, 8))],
+      address: "" + Math.ceil(getRandom(1, 1000)) + ", " + Math.ceil(getRandom(1, 1000)) + "",
+      price: Math.ceil(getRandom(1, 1000000)),
+      type: longingTypes[Math.floor(getRandom(0, 4))],
+      rooms: Math.round(getRandom(1, 5)),
+      guests: Math.round(getRandom(1, 10)),
+      checkin: checkinTime[Math.floor(getRandom(0, 3))],
+      checkout: checkoutTime[Math.floor(getRandom(0, 3))],
+      features: getRandomLength(cloneArray(longingFeatures), 1, 6),
+      description: "",
+      photos: shuffle(cloneArray(lodgingPhotos))
+    },
+    location: {
+      x: Math.ceil(getRandom(1, 1200)),
+      y: Math.ceil(getRandom(130, 630))
+    }
+  }
 ];
 console.log (lodgingOffers);
