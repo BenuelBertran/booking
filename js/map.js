@@ -3,8 +3,40 @@
 /* global window */
 "use strict";
 
-//Временно включаем активный режим окна выбора жилья
-document.querySelector(".map").classList.remove("map--faded");
+///// Страница в неактивном состоянии /////
+
+//Список объявлений
+var lodgingOffersList = document.querySelector(".map");
+//Главный маркер
+var mainPin = lodgingOffersList.querySelector(".map__pin--main");
+//Форма объявления
+var lodgingOfferForm = document.querySelector(".notice__form");
+//Шапка формы объявлений
+var formHeader = lodgingOfferForm.querySelector(".notice__header");
+//Блоки формы объявлений
+var formBlocks = lodgingOfferForm.querySelectorAll(".form__element");
+
+//Блокировка формы по умолчанию
+formHeader.disabled = true;
+for (var i = 0; i < formBlocks.length; i++) {
+  formBlocks[i].disabled = true;
+}
+
+//Разблокировка формы
+var onPinMoved = function() {
+  lodgingOffersList.classList.remove("map--faded");
+  lodgingOfferForm.classList.remove("notice__form--disabled");
+  formHeader.disabled = false;
+  for (var i = 0; i < formBlocks.length; i++) {
+    formBlocks[i].disabled = false;
+  }
+};
+
+mainPin.addEventListener("mouseup", onPinMoved);
+
+///// Страница в активном состоянии /////
+
+//document.querySelector(".map").classList.remove("map--faded");
 
 
 //Случайное число в диапазоне
@@ -271,21 +303,19 @@ var lodgingOffers = [
 //Список маркеров объявлений
 var pinsList = document.querySelector(".map__pins");
 
-//Маркер объявления (шаблон)
+//Шаблон маркера объявления
 var pinTemplate = document.querySelector("template").content.querySelector(".map__pin");
 
-for (var i = 0; i < lodgingOffers.length; i++) {
-  var pinElement = pinTemplate.cloneNode(true);
-  pinElement.style.left = "" + lodgingOffers[i].location.x + "px";
-  pinElement.style.top = "" + lodgingOffers[i].location.y + "px";
-  pinElement.querySelector("img").src = lodgingOffers[i].author.avatar;
-  pinElement.querySelector("img").alt = lodgingOffers[i].offer.title;
-
-  pinsList.appendChild(pinElement);
-}
-
-//Список объявлений
-var lodgingOffersList = document.querySelector(".map");
+////Отрисовка маркеров на странице
+//for (var i = 0; i < lodgingOffers.length; i++) {
+//  var pinElement = pinTemplate.cloneNode(true);
+//  pinElement.style.left = "" + lodgingOffers[i].location.x + "px";
+//  pinElement.style.top = "" + lodgingOffers[i].location.y + "px";
+//  pinElement.querySelector("img").src = lodgingOffers[i].author.avatar;
+//  pinElement.querySelector("img").alt = lodgingOffers[i].offer.title;
+//
+//  pinsList.appendChild(pinElement);
+//}
 
 //Блок с фильтром объявлений
 var lodgingOfferFilter = document.querySelector(".map__filters-container");
@@ -362,5 +392,5 @@ offerElement.querySelector(".popup__photos").removeChild(offerElement.querySelec
 offerElement.querySelector(".popup__avatar").src = lodgingOffers[0].author.avatar;
 
 
-//Добавление готового шаблона объявления на страницу
-lodgingOffersList.insertBefore(offerElement, lodgingOfferFilter);
+////Добавление готового шаблона объявления на страницу
+//lodgingOffersList.insertBefore(offerElement, lodgingOfferFilter);
