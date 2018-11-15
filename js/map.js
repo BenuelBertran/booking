@@ -444,7 +444,6 @@ pinsList.addEventListener("click", function(evt) {
   }
 });
 
-
 //===========================================
 
 var lodgingOfferTitle = document.getElementById("title");
@@ -452,27 +451,68 @@ var lodgingOfferPrice = document.getElementById("price");
 var lodgingOfferTimein = document.getElementById("timein");
 var lodgingOfferTimeout = document.getElementById("timeout");
 var lodgingOfferType = document.getElementById("type");
+var lodgingOfferRooms = document.getElementById("room_number");
+var lodgingOfferCapacity = document.getElementById("capacity");
 
+//Атрибуты полей формы по умолчанию
 lodgingOfferForm.action = "https://js.dump.academy/keksobooking";
-
 lodgingOfferTitle.required = true;
 lodgingOfferTitle.setAttribute("minlength", "30");
 lodgingOfferTitle.setAttribute("maxlength", "100");
-
 lodgingOfferPrice.required = true;
 lodgingOfferPrice.max = 1000000;
-
 addressField.disabled = true;
+lodgingOfferCapacity.children[0].removeAttribute("selected");
+lodgingOfferCapacity.children[0].classList.add("hidden");
+lodgingOfferCapacity.children[1].classList.add("hidden");
+lodgingOfferCapacity.children[2].setAttribute("selected", "");
+lodgingOfferCapacity.children[3].classList.add("hidden");
 
-//var minPrice = [
-//  "0",
-//  "1000",
-//  "5000",
-//  "10000"
-//];
-//for (var i = 0; i < lodgingOfferType.children.length; i++) {
-//  if (lodgingOfferType.children[i].hasAttribute("selected")) {
-//    lodgingOfferType.min = minPrice[i];
-//    lodgingOfferType.placeholder = minPrice[i];
-//  }
-//}
+//Зависимость минимальной цены от Типа жилья
+var minPrice = [
+  "0",
+  "1000",
+  "5000",
+  "10000"
+];
+lodgingOfferType.addEventListener("change", function() {
+  lodgingOfferPrice.min = minPrice[this.selectedIndex];
+  lodgingOfferPrice.placeholder = minPrice[this.selectedIndex];
+});
+
+//Синхронизация полей времени Заезда и Выезда
+lodgingOfferTimein.addEventListener("change", function() {
+  lodgingOfferTimeout.selectedIndex = this.selectedIndex;
+});
+lodgingOfferTimeout.addEventListener("change", function() {
+  lodgingOfferTimein.selectedIndex = this.selectedIndex;
+});
+
+//Ограничение выбора гостей в зависимости от количества комнат
+lodgingOfferRooms.addEventListener("change", function() {
+  if (this.selectedIndex === 0) {
+    lodgingOfferCapacity.children[2].classList.remove("hidden");
+    lodgingOfferCapacity.children[0].classList.add("hidden");
+    lodgingOfferCapacity.children[1].classList.add("hidden");
+    lodgingOfferCapacity.children[3].classList.add("hidden");
+    lodgingOfferCapacity.selectedIndex = 2;
+  } else if (this.selectedIndex === 1) {
+    lodgingOfferCapacity.children[0].classList.add("hidden");
+    lodgingOfferCapacity.children[1].classList.remove("hidden");
+    lodgingOfferCapacity.children[2].classList.remove("hidden");
+    lodgingOfferCapacity.children[3].classList.add("hidden");
+    lodgingOfferCapacity.selectedIndex = 2;
+  }else if (this.selectedIndex === 2) {
+    lodgingOfferCapacity.children[0].classList.remove("hidden");
+    lodgingOfferCapacity.children[1].classList.remove("hidden");
+    lodgingOfferCapacity.children[2].classList.remove("hidden");
+    lodgingOfferCapacity.children[3].classList.add("hidden");
+    lodgingOfferCapacity.selectedIndex = 2;
+  } else if (this.selectedIndex === 3) {
+    lodgingOfferCapacity.children[0].classList.add("hidden");
+    lodgingOfferCapacity.children[1].classList.add("hidden");
+    lodgingOfferCapacity.children[2].classList.add("hidden");
+    lodgingOfferCapacity.children[3].classList.remove("hidden");
+    lodgingOfferCapacity.selectedIndex = 3;
+  }
+});
