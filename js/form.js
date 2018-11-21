@@ -3,23 +3,10 @@
 /* global window */
 "use strict";
 
-////////// Форма создания объявления //////////
+          ////////// ФОРМА СОЗДАНИЯ ОБЪЯВЛЕНИЯ //////////
 
 (function() {
-  ///// Глобальные переменные /////
-
-  window.form = {
-    //Окно формы создания объявления
-    lodgingOfferForm: document.querySelector(".notice__form"),
-    //Блоки формы создания объявления
-    formBlocks: document.querySelectorAll(".form__element"),
-    //Поле "Адрес"
-    addressField: document.getElementById("address"),
-    //Шапка окна формы создания объявления
-    formHeader: document.querySelector(".notice__header")
-  };
-
-  ///// Локальные переменные /////
+  //----------> Локальные переменные
 
   //Заголовок объявления
   var lodgingOfferTitle = document.getElementById("title");
@@ -36,8 +23,7 @@
   //Поле "Количество мест"
   var lodgingOfferCapacity = document.getElementById("capacity");
   //Кнопка сброса страницы к значениям по умолчанию
-  var resetButton =
-  window.form.lodgingOfferForm.querySelector(".form__reset");
+  var resetButton = document.querySelector(".form__reset");
   //Минимальная цена за ночь в зависимости от типа жилья
   var minPrice = [
     "0",
@@ -46,13 +32,26 @@
     "10000"
   ];
 
-  ///// Состояние полей формы по умолчанию /////
+  //----------> Глобальные переменные
+
+  window.form = {
+    //Окно формы создания объявления
+    lodgingOfferForm: document.querySelector(".notice__form"),
+    //Шапка окна формы создания объявления
+    formHeader: document.querySelector(".notice__header"),
+    //Блоки формы создания объявления
+    formBlocks: document.querySelectorAll(".form__element"),
+    //Поле "Адрес"
+    addressField: document.getElementById("address")
+  };
+
+  //---------> Состояние полей формы по умолчанию
 
   window.form.lodgingOfferForm.action = "https://js.dump.academy/keksobooking";
   window.form.formHeader.disabled = true;
-  for (var i = 0; i < window.form.formBlocks.length; i++) {
-    window.form.formBlocks[i].disabled = true;
-  }
+  window.form.formBlocks.forEach(function(block) {
+    block.disabled = true;
+  });
   lodgingOfferTitle.required = true;
   lodgingOfferTitle.setAttribute("minlength", "30");
   lodgingOfferTitle.setAttribute("maxlength", "100");
@@ -66,7 +65,7 @@
   lodgingOfferCapacity.children[2].setAttribute("selected", "");
   lodgingOfferCapacity.children[3].classList.add("hidden");
 
-  ///// Поведение полей формы /////
+  //----------> Поведение полей формы
 
   //Установка минимальной цены в зависимости от типа жилья
   lodgingOfferType.addEventListener("change", function() {
@@ -109,17 +108,17 @@
     }
   });
 
-  ///// Отправка данных формы создания объявления /////
+  //---------> Отправка данных формы объявления
 
-  //Отправка данных формы создания объявления с Успехом
+  //Отправка данных формы объявления с Успехом
   var onSuccess = function(success) {
     //Сброс значений формы
     window.form.lodgingOfferForm.reset();
     //Деактивация полей формы объявления
     window.form.formHeader.disabled = true;
-    for (var i = 0; i < window.form.formBlocks.length; i++) {
-      window.form.formBlocks[i].disabled = true;
-    }
+    window.form.formBlocks.forEach(function(block) {
+      block.disabled = true;
+    });
     //Деактивация карты
     window.map.lodgingOffersList.classList.add("map--faded");
     //Деактивация маркеров похожих объявлений
@@ -139,7 +138,7 @@
     window.map.offerElement.classList.add("hidden");
   };
 
-  //Отправка данных формы создания объявления с Ошибкой
+  //Отправка данных формы объявления с Ошибкой
   var onError = function (errorMessage) {
     //Всплывающее сообщение об ошибке
     var message = document.createElement("div");
@@ -154,24 +153,23 @@
     document.body.insertAdjacentElement("afterBegin", message);
   };
 
-  //Отправка данных заполненной формы объявления на сервер и сброс полей формы к значениям по умолчанию при успешной отправке
+  //Отправка данных формы на сервер
   window.form.lodgingOfferForm.addEventListener("submit", function(evt) {
-  //Отправка данных формы создания объявления
-  window.backend.save(new FormData(window.form.lodgingOfferForm), onSuccess, onError);
+    window.backend.save(new FormData(window.form.lodgingOfferForm), onSuccess, onError);
     evt.preventDefault();
   });
 
-  ///// Cброс страницы к значениям по умолчанию /////
+  //----------> Cброс страницы к значениям по умолчанию
 
-  //Сброс значений формы при нажатии на кнопку Reset
+  //Сброс значений формы
   resetButton.addEventListener("click", function() {
     //Сброс значений формы
     window.form.lodgingOfferForm.reset();
     //Деактивация полей формы объявления
     window.form.formHeader.disabled = true;
-    for (var i = 0; i < window.form.formBlocks.length; i++) {
-      window.form.formBlocks[i].disabled = true;
-    }
+    window.form.formBlocks.forEach(function(block) {
+      block.disabled = true;
+    });
     //Деактивация карты
     window.map.lodgingOffersList.classList.add("map--faded");
     //Деактивация маркеров похожих объявлений
