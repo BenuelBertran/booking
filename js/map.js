@@ -3,10 +3,10 @@
 /* global window */
 "use strict";
 
-////////// Карта Токио с объявлениями о сдаче жилья //////////
+////////// КАРТА С ОБЪЯВЛЕНИЯМИ //////////
 
 (function() {
-    ///// Глобальные переменные /////
+  //----------> Глобальные переменные
 
   window.map = {
     //Карта жилья
@@ -15,57 +15,7 @@
     lodgingOfferFilter: document.querySelector(".map__filters-container")
   };
 
-  ///// Локальные переменные /////
-
-
-  ///// Функции /////
-
-  //Случайное число в диапазоне
-  var getRandom = function (min, max) {
-    return Math.random() * (max - min) + min;
-  };
-  //Случайная длина массива в диапазоне
-  var getRandomLength = function (array, min, max) {
-    array.length = Math.round(getRandom(min, max));
-
-    return array;
-  };
-  //Перемешивание элементов массива
-  var shuffle = function (array) {
-    for (var i = array.length - 1; i > 0; i--) {
-        var j = Math.floor(Math.random() * (i + 1));
-        var temp = array[i];
-        array[i] = array[j];
-        array[j] = temp;
-    }
-    return array;
-  };
-  //Создание независимой копии массива (без дочерних "объектов")
-  var cloneArray = function(array) {
-    var clone = array.slice(0);
-    return clone;
-  };
-
-//      //Закрытие окна похожего объявления
-//      var ESC_KEYCODE = 27;
-//      var closePopupButton = window.map.offerElement.querySelector(".popup__close");
-//      var onPopupEscPress = function(evt) {
-//        if (evt.keyCode === ESC_KEYCODE) {
-//          closeLodgingOfferPopup();
-//        }
-//      };
-//      var closeLodgingOfferPopup = function () {
-//        window.map.offerElement.classList.add("hidden");
-//        document.removeEventListener("keydown", onPopupEscPress);
-//        closePopupButton.removeEventListener("click", closeLodgingOfferPopup);
-//      };
-//      //Открытие окна похожего объявления
-//      window.map.offerElement.classList.remove("hidden");
-//      document.addEventListener("keydown", onPopupEscPress);
-//      closePopupButton.addEventListener("click", closeLodgingOfferPopup);
-//    };
-
-  ///// Страница в активном состоянии /////
+  //----------> Активация страницы
 
   window.pins.mainPin.addEventListener("mousedown", function(evt) {
     evt.preventDefault();
@@ -74,12 +24,12 @@
       y: evt.clientY
     };
     //Координаты острого конца главного маркера
-    window.form.addressField.value = "" + (window.map.mainPin.offsetLeft + 33) + "" + ", " + (window.map.mainPin.offsetTop + 65 + 22) + "";
+    window.form.addressField.value = "" + (window.pins.mainPin.offsetLeft + 33) + "" + ", " + (window.pins.mainPin.offsetTop + 65 + 22) + "";
     //Активация карты
     window.map.lodgingOffersList.classList.remove("map--faded");
     var onMouseMove = function (evt) {
       evt.preventDefault();
-      window.map.mainPin.querySelector("img").draggable = true;
+      window.pins.mainPin.querySelector("img").draggable = true;
       var shift = {
         x: startCoodrs.x - evt.clientX,
         y: startCoodrs.y - evt.clientY
@@ -88,33 +38,30 @@
         x: evt.clientX,
         y: evt.clientY
       };
-      if (window.map.mainPin.offsetLeft - shift.x >= 33 && window.map.mainPin.offsetLeft - shift.x <= 1169) {
-        window.map.mainPin.style.left = window.map.mainPin.offsetLeft - shift.x + "px";
+      if (window.pins.mainPin.offsetLeft - shift.x >= 33 && window.pins.mainPin.offsetLeft - shift.x <= 1169) {
+        window.pins.mainPin.style.left = window.pins.mainPin.offsetLeft - shift.x + "px";
       }
-      if (window.map.mainPin.offsetTop - shift.y >= 130 && window.map.mainPin.offsetTop - shift.y <= 630) {
-        window.map.mainPin.style.top = window.map.mainPin.offsetTop - shift.y + "px";
+      if (window.pins.mainPin.offsetTop - shift.y >= 130 && window.pins.mainPin.offsetTop - shift.y <= 630) {
+        window.pins.mainPin.style.top = window.pins.mainPin.offsetTop - shift.y + "px";
       }
-      window.map.mainPin.style.left = window.map.mainPin.offsetLeft + "px";
-      window.map.mainPin.style.top = window.map.mainPin.offsetTop + "px";
+      window.pins.mainPin.style.left = window.pins.mainPin.offsetLeft + "px";
+      window.pins.mainPin.style.top = window.pins.mainPin.offsetTop + "px";
       //Координаты острого конца главного маркера
-      window.form.addressField.value = "" + (window.map.mainPin.offsetLeft + 33) + "" + ", " + (window.map.mainPin.offsetTop + 65 + 22) + "";
+      window.form.addressField.value = "" + (window.pins.mainPin.offsetLeft + 33) + "" + ", " + (window.pins.mainPin.offsetTop + 65 + 22) + "";
     };
-
     var onMouseUp = function (evt) {
       evt.preventDefault();
-      window.map.mainPin.querySelector("img").draggable = false;
+      window.pins.mainPin.querySelector("img").draggable = false;
       //Активация поля формы объявления
       window.form.lodgingOfferForm.classList.remove("notice__form--disabled");
       window.form.formHeader.disabled = false;
-      for (var i = 0; i < window.form.formBlocks.length; i++) {
-        window.form.formBlocks[i].disabled = false;
-      }
+      window.form.formBlocks.forEach(function(block) {
+        block.disabled = false;
+      });
       //Отображение маркеров похожих объявлений
-      for (var j = 0; j < 7; j++) {
-        if (window.map.pinsList.children[j].hasAttribute("style")) {
-          window.map.pinsList.children[j].classList.remove("hidden");
+      for (var i = 2; i < window.pins.pinsList.children.length; i++) {
+          window.pins.pinsList.children[i].classList.remove("hidden");
         }
-      }
       document.removeEventListener("mousemove", onMouseMove);
       document.removeEventListener("mouseup", onMouseUp);
     };
@@ -122,36 +69,56 @@
     document.addEventListener("mouseup", onMouseUp);
   });
 
-  //Показ похожего объявления по клику
-      window.pins.pinsList.addEventListener("click", function(evt) {
-        var target = evt.target;
-        while (target != this) {
-          if (target.hasAttribute("style")) {
-            if (target === window.map.pinsList.children[2]) {
-              window.makeLodgingOffer(0);
-            } else if (target === window.map.pinsList.children[3]) {
-              window.makeLodgingOffer(1);
-            } else if (target === window.map.pinsList.children[4]) {
-              window.makeLodgingOffer(2);
-            } else if (target === window.map.pinsList.children[5]) {
-              window.makeLodgingOffer(3);
-            } else if (target === window.map.pinsList.children[6]) {
-              window.makeLodgingOffer(4);
-            } else if (target === window.map.pinsList.children[7]) {
-              window.makeLodgingOffer(5);
-            } else if (target === window.map.pinsList.children[8]) {
-              window.makeLodgingOffer(6);
-            } else if (target === window.map.pinsList.children[9]) {
-              window.makeLodgingOffer(7);
-            } else if (target === window.map.pinsList.children[10]) {
-              window.makeLodgingOffer(8);
-            } else if (target === window.map.pinsList.children[11]) {
-              window.makeLodgingOffer(9);
-            }
-          }
-          target = target.parentNode;
+  //----------> Открытие окна содержания объявления
+
+  window.pins.pinsList.addEventListener("click", function(evt) {
+    //Отображение содержания объявления по клику
+    if (evt.target.parentNode.classList.contains("map__pin") && !evt.target.parentNode.classList.contains("map__pin--main")) {
+      var target = evt.target.parentNode;
+      for (var i = 2; i < window.pins.pinsList.children.length; i++) {
+        if (window.pins.pinsList.children[i] === target) {
+          window.map.lodgingOffersList.children[i - 1].classList.remove("hidden");
+          window.map.lodgingOffersList.addEventListener("click", closePopup);
+          document.addEventListener("keydown", onPopupEscPress);
+        } else {
+          window.map.lodgingOffersList.children[i - 1].classList.add("hidden");
         }
-      });
+      }
+    }
+  });
+
+  //----------> Закрытие окна содержания объявления
+
+  //Закрытие по клику на крестик
+  var closePopup = function(evt) {
+    var target = evt.target;
+    if (target.classList.contains("popup__close")) {
+      for (var i = 0; i < window.map.lodgingOffersList.children.length; i++) {
+        if (window.map.lodgingOffersList.children[i].classList.contains("popup") && !window.map.lodgingOffersList.children[i].classList.contains("hidden")) {
+          window.map.lodgingOffersList.children[i].classList.add("hidden");
+        }
+      }
+      window.map.lodgingOffersList.removeEventListener("click", closePopup);
+      document.removeEventListener("keydown", onPopupEscPress);
+    }
+  };
+  //Закрытие по нажатию ESC
+  var ESC_KEYCODE = 27;
+  var onPopupEscPress = function(evt) {
+    if (evt.keyCode === ESC_KEYCODE) {
+      for (var i = 0; i < window.map.lodgingOffersList.children.length; i++) {
+        if (window.map.lodgingOffersList.children[i].classList.contains("popup") && !window.map.lodgingOffersList.children[i].classList.contains("hidden")) {
+          window.map.lodgingOffersList.children[i].classList.add("hidden");
+        }
+      }
+      window.map.lodgingOffersList.removeEventListener("click", closePopup);
+      document.removeEventListener("keydown", onPopupEscPress);
+    }
+  };
+
+
+
+
 })();
 
 //////////////////////////////////

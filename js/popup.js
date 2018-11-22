@@ -17,7 +17,7 @@
     //Отрисовка окна с содержанием объявления на странице
     renderPopup: function() {
       var fragment = document.createDocumentFragment();
-      window.offersList.forEach(function(offersItem) {
+      window.data.offersList.forEach(function(offersItem) {
         var offerElement = offerTemplate.cloneNode(true);
         //Добавление недостающих классов в шаблон объявления
         offerElement.querySelector("h3").classList.add("popup__title");
@@ -43,41 +43,30 @@
           }
         offerElement.querySelector(".popup__text--capacity").textContent = offersItem.offer.rooms + " комнаты для " + offersItem.offer.guests + " гостей";
         offerElement.querySelector(".popup__text--time").textContent = "Заезд после " + offersItem.offer.checkin + ", выезд до " + offersItem.offer.checkout;
-        if (offersItem.offer.features.length === 5) {
-          offerElement.querySelector(".feature--conditioner").style.display = "none";
-        } else if (offersItem.offer.features.length === 4) {
-          offerElement.querySelector(".feature--conditioner").style.display = "none";
-          offerElement.querySelector(".feature--elevator").style.display = "none";
-        } else if (offersItem.offer.features.length === 3) {
-          offerElement.querySelector(".feature--conditioner").style.display = "none";
-          offerElement.querySelector(".feature--elevator").style.display = "none";
-          offerElement.querySelector(".feature--washer").style.display = "none";
-        } else if (offersItem.offer.features.length === 2) {
-          offerElement.querySelector(".feature--conditioner").style.display = "none";
-          offerElement.querySelector(".feature--elevator").style.display = "none";
-          offerElement.querySelector(".feature--washer").style.display = "none";
-          offerElement.querySelector(".feature--parking").style.display = "none";
-        } else if (offersItem.offer.features.length === 1) {
-          offerElement.querySelector(".feature--conditioner").style.display = "none";
-          offerElement.querySelector(".feature--elevator").style.display = "none";
-          offerElement.querySelector(".feature--washer").style.display = "none";
-          offerElement.querySelector(".feature--parking").style.display = "none";
-          offerElement.querySelector(".feature--dishwasher").style.display = "none";
-        } else if (offersItem.offer.features.length === 0) {
-          offerElement.querySelector(".feature--conditioner").style.display = "none";
-          offerElement.querySelector(".feature--elevator").style.display = "none";
-          offerElement.querySelector(".feature--washer").style.display = "none";
-          offerElement.querySelector(".feature--parking").style.display = "none";
-          offerElement.querySelector(".feature--dishwasher").style.display = "none";
-          offerElement.querySelector(".feature--wifi").style.display = "none";
+        //Список удобств
+        var featuresTemplate = offerElement.querySelector(".popup__features").children[0].cloneNode(true);
+        for (var i = 0; i < 6; i++) {
+          var featuresElement = offerElement.querySelector(".popup__features").children[0];
+          offerElement.querySelector(".popup__features").removeChild(featuresElement);
         }
+        for (var j = 0; j < offersItem.offer.features.length; j++) {
+          var newFeature = featuresTemplate.cloneNode(true);
+          newFeature.removeAttribute("class");
+          newFeature.setAttribute("class", "feature " + "feature--" + offersItem.offer.features[j]);
+          offerElement.querySelector(".popup__features").appendChild(newFeature);
+        }
+        //Описание жилья
         offerElement.querySelector(".popup__description").textContent = offersItem.offer.description;
-        for (var i = 0; i < offersItem.offer.photos.length; i++) {
-          var photosElement = offerElement.querySelector(".popup__photos").children[0].cloneNode(true);
-          photosElement.querySelector("img").src = offersItem.offer.photos[i];
-          offerElement.querySelector(".popup__photos").append(photosElement);
+        //Фотографии жилья
+        var photosElement = offerElement.querySelector(".popup__photos").children[0];
+        var photosTemplate = photosElement.cloneNode(true);
+        offerElement.querySelector(".popup__photos").removeChild(photosElement);
+        for (var k = 0; k < offersItem.offer.photos.length; k++) {
+          var newPhoto = photosTemplate.cloneNode(true);
+          newPhoto.querySelector("img").src = offersItem.offer.photos[k];
+          offerElement.querySelector(".popup__photos").appendChild(newPhoto);
         }
-        offerElement.querySelector(".popup__photos").removeChild(offerElement.querySelector(".popup__photos").children[0]);
+        //Аватар автора объявления
         offerElement.querySelector(".popup__avatar").src = offersItem.author.avatar;
         //Скрытие окна с содержанием объявления по умолчанию
         offerElement.classList.add("hidden");

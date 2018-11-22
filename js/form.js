@@ -108,10 +108,9 @@
     }
   });
 
-  //---------> Отправка данных формы объявления
+  //----------> Деактивация страницы
 
-  //Отправка данных формы объявления с Успехом
-  var onSuccess = function(success) {
+  var deactivatePage = function() {
     //Сброс значений формы
     window.form.lodgingOfferForm.reset();
     //Деактивация полей формы объявления
@@ -122,37 +121,30 @@
     //Деактивация карты
     window.map.lodgingOffersList.classList.add("map--faded");
     //Деактивация маркеров похожих объявлений
-    for (var j = 0; j < window.map.pinsList.children.length; j++) {
-      if (window.map.pinsList.children[j].hasAttribute("style")) {
-        window.map.pinsList.children[j].classList.add("hidden");
+    for (var i = 2; i < window.pins.pinsList.children.length; i++) {
+        window.pins.pinsList.children[i].classList.add("hidden");
       }
-    }
     //Отображение главного маркера
-    window.map.mainPin.classList.remove("hidden");
+    window.pins.mainPin.classList.remove("hidden");
     //Положение главного маркера
-    window.map.mainPin.style.left = window.map.mainPinX + "px";
-    window.map.mainPin.style.top = window.map.mainPinY + "px";
+    window.pins.mainPin.style.left = window.pins.mainPinX + "px";
+    window.pins.mainPin.style.top = window.pins.mainPinY + "px";
     //Адрес главного маркера (без указателя)
-    window.form.addressField.value = "" + (window.map.mainPinX + 33) + ", " + "" + (window.map.mainPinY + 33) + "";
+    window.form.addressField.value = "" + (window.pins.mainPinX + 33) + ", " + "" + (window.pins.mainPinY + 33) + "";
     //Скрытие окна похожих объявлений
-    window.map.offerElement.classList.add("hidden");
+    window.map.lodgingOffersList.querySelector(".map__card").classList.add("hidden");
   };
 
+  //---------> Отправка данных формы объявления
+
+  //Отправка данных формы объявления с Успехом
+  var onSuccess = function(success) {
+    deactivatePage();
+  };
   //Отправка данных формы объявления с Ошибкой
   var onError = function (errorMessage) {
-    //Всплывающее сообщение об ошибке
-    var message = document.createElement("div");
-    message.style = "z-index: 100; width: 30%; margin: 0 auto; padding: 20px; border: 5px solid black; box-sizing: border-box; text-align: center; background-color: red; color: black";
-    message.style.position = "fixed";
-    message.style.top = "50%";
-    message.style.left = 0;
-    message.style.right = 0;
-    message.style.fontSize = "30px";
-
-    message.textContent = errorMessage;
-    document.body.insertAdjacentElement("afterBegin", message);
+    window.data.errorMessage(errorMessage);
   };
-
   //Отправка данных формы на сервер
   window.form.lodgingOfferForm.addEventListener("submit", function(evt) {
     window.backend.save(new FormData(window.form.lodgingOfferForm), onSuccess, onError);
@@ -162,30 +154,5 @@
   //----------> Cброс страницы к значениям по умолчанию
 
   //Сброс значений формы
-  resetButton.addEventListener("click", function() {
-    //Сброс значений формы
-    window.form.lodgingOfferForm.reset();
-    //Деактивация полей формы объявления
-    window.form.formHeader.disabled = true;
-    window.form.formBlocks.forEach(function(block) {
-      block.disabled = true;
-    });
-    //Деактивация карты
-    window.map.lodgingOffersList.classList.add("map--faded");
-    //Деактивация маркеров похожих объявлений
-    for (var j = 0; j < window.map.pinsList.children.length; j++) {
-      if (window.map.pinsList.children[j].hasAttribute("style")) {
-        window.map.pinsList.children[j].classList.add("hidden");
-      }
-    }
-    //Отображение главного маркера
-    window.map.mainPin.classList.remove("hidden");
-    //Положение главного маркера
-    window.map.mainPin.style.left = window.map.mainPinX + "px";
-    window.map.mainPin.style.top = window.map.mainPinY + "px";
-    //Адрес главного маркера (без указателя)
-    window.form.addressField.value = "" + (window.map.mainPinX + 33) + ", " + "" + (window.map.mainPinY + 33) + "";
-    //Скрытие окна похожих объявлений
-    window.map.offerElement.classList.add("hidden");
-  });
+  resetButton.addEventListener("click", deactivatePage);
 })();

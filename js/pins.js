@@ -25,7 +25,7 @@
     //Отрисовка маркеров на странице
     renderPins: function() {
     var fragment = document.createDocumentFragment();
-    window.offersList.forEach(function(offer) {
+    window.data.offersList.forEach(function(offer) {
       var pinElement = pinTemplate.cloneNode(true);
       pinElement.style.left = "" + offer.location.x + "px";
       pinElement.style.top = "" + offer.location.y + "px";
