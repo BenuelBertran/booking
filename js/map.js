@@ -6,6 +6,19 @@
 ////////// КАРТА С ОБЪЯВЛЕНИЯМИ //////////
 
 (function() {
+  //----------> Локальные переменные
+
+  //Фильтр по типу жилья
+  var typeFilter = document.getElementById("housing-type");
+  //Фильтр по цене
+  var priceFilter = document.getElementById("housing-price");
+  //Фильтр по количеству комнат
+  var roomsFilter = document.getElementById("housing-rooms");
+  //Фильтр по количеству жильцов
+  var capacityFilter = document.getElementById("housing-guests");
+  //Фильтр по виду удобств
+  var featuresFilter = document.getElementById("housing-features");
+
   //----------> Глобальные переменные
 
   window.map = {
@@ -78,10 +91,12 @@
       for (var i = 2; i < window.pins.pinsList.children.length; i++) {
         if (window.pins.pinsList.children[i] === target) {
           window.map.lodgingOffersList.children[i - 1].classList.remove("hidden");
-          window.map.lodgingOffersList.addEventListener("click", closePopup);
+          window.map.lodgingOffersList.children[i - 1].classList.add("map__pin--active");
+          window.map.lodgingOffersList.addEventListener("click", onPopupCrossPress);
           document.addEventListener("keydown", onPopupEscPress);
         } else {
           window.map.lodgingOffersList.children[i - 1].classList.add("hidden");
+          window.map.lodgingOffersList.children[i - 1].classList.remove("map__pin--active");
         }
       }
     }
@@ -89,35 +104,139 @@
 
   //----------> Закрытие окна содержания объявления
 
+  //Закрытие окна
+  var closePopup = function() {
+    var openedPopup = window.map.lodgingOffersList.querySelector(".map__pin--active");
+    openedPopup.classList.add("hidden");
+    openedPopup.classList.remove("map__pin--active");
+    window.map.lodgingOffersList.removeEventListener("click", onPopupCrossPress);
+    document.removeEventListener("keydown", onPopupEscPress);
+  };
   //Закрытие по клику на крестик
-  var closePopup = function(evt) {
+  var onPopupCrossPress = function(evt) {
     var target = evt.target;
     if (target.classList.contains("popup__close")) {
-      for (var i = 0; i < window.map.lodgingOffersList.children.length; i++) {
-        if (window.map.lodgingOffersList.children[i].classList.contains("popup") && !window.map.lodgingOffersList.children[i].classList.contains("hidden")) {
-          window.map.lodgingOffersList.children[i].classList.add("hidden");
-        }
-      }
-      window.map.lodgingOffersList.removeEventListener("click", closePopup);
-      document.removeEventListener("keydown", onPopupEscPress);
+      closePopup();
     }
   };
   //Закрытие по нажатию ESC
   var ESC_KEYCODE = 27;
   var onPopupEscPress = function(evt) {
     if (evt.keyCode === ESC_KEYCODE) {
-      for (var i = 0; i < window.map.lodgingOffersList.children.length; i++) {
-        if (window.map.lodgingOffersList.children[i].classList.contains("popup") && !window.map.lodgingOffersList.children[i].classList.contains("hidden")) {
-          window.map.lodgingOffersList.children[i].classList.add("hidden");
-        }
-      }
-      window.map.lodgingOffersList.removeEventListener("click", closePopup);
-      document.removeEventListener("keydown", onPopupEscPress);
+      closePopup();
     }
   };
 
+  //----------> Фильтрация похожих объявлений
 
+  //Значения фильтра по умолчанию
+  var defaultPinList = function() {
+    for (var i = 2; i < window.pins.pinsList.children.length; i++) {
+      window.pins.pinsList.children[i].classList.remove("hidden");
+    }
+  };
 
+  //Отображение маркеров объявлений по типу жилья
+  var changePinsByType = function(fieldClass, value) {
+    for (var i = 2; i < window.pins.pinsList.children.length; i++) {
+      if (window.map.lodgingOffersList.children[i - 1].querySelector(fieldClass).textContent === value) {
+        window.pins.pinsList.children[i].classList.remove("hidden");
+      } else {
+          window.pins.pinsList.children[i].classList.add("hidden");
+        }
+    }
+  };
+  //Выбор типа жилья
+  typeFilter.addEventListener("change", function() {
+    if (window.map.lodgingOffersList.querySelector(".map__pin--active")) {
+      closePopup();
+    }
+    if (this.selectedIndex === 0) {
+      defaultPinList();
+    } else if (this.selectedIndex === 1) {
+        changePinsByType(".popup__type", "Квартира");
+      } else if (this.selectedIndex === 2) {
+          changePinsByType(".popup__type", "Дом");
+        } else if (this.selectedIndex === 3) {
+            changePinsByType(".popup__type", "Бунгало");
+          }
+  });
+
+  //Отображение маркеров объявлений по цене
+  var changePinsByPrice = function(fieldClass, value1, value2) {
+    for (var i = 2; i < window.pins.pinsList.children.length; i++) {
+      if (parseInt(window.map.lodgingOffersList.children[i - 1].querySelector(fieldClass).textContent, 10) >= value1 && parseInt(window.map.lodgingOffersList.children[i - 1].querySelector(fieldClass).textContent, 10) <= value2) {
+        window.pins.pinsList.children[i].classList.remove("hidden");
+      } else {
+          window.pins.pinsList.children[i].classList.add("hidden");
+        }
+    }
+  };
+  //Выбор цены
+  priceFilter.addEventListener("change", function() {
+    if (window.map.lodgingOffersList.querySelector(".map__pin--active")) {
+      closePopup();
+    }
+    if (this.selectedIndex === 0) {
+      defaultPinList();
+    } else if (this.selectedIndex === 1) {
+        changePinsByPrice(".popup__price", 10000, 50000);
+      } else if (this.selectedIndex === 2) {
+          changePinsByPrice(".popup__price", 0, 10000);
+        } else if (this.selectedIndex === 3) {
+            changePinsByPrice(".popup__price", 50000, 10000000);
+          }
+  });
+
+  //Отображение маркеров объявлений по количеству комнат
+  var changePinsByRooms = function(fieldClass, value) {
+    for (var i = 2; i < window.pins.pinsList.children.length; i++) {
+      if (parseInt(window.map.lodgingOffersList.children[i - 1].querySelector(fieldClass).textContent, 10) === value) {
+        window.pins.pinsList.children[i].classList.remove("hidden");
+      } else {
+          window.pins.pinsList.children[i].classList.add("hidden");
+        }
+    }
+  };
+  //Выбор количества комнат
+  roomsFilter.addEventListener("change", function() {
+    if (window.map.lodgingOffersList.querySelector(".map__pin--active")) {
+      closePopup();
+    }
+    if (this.selectedIndex === 0) {
+      defaultPinList();
+    } else if (this.selectedIndex === 1) {
+        changePinsByRooms(".popup__text--capacity", 1);
+      } else if (this.selectedIndex === 2) {
+          changePinsByRooms(".popup__text--capacity", 2);
+        } else if (this.selectedIndex === 3) {
+            changePinsByRooms(".popup__text--capacity", 3);
+          }
+  });
+
+  //Отображение маркеров объявлений по количеству спальных мест
+  var changePinsByCapacity = function(fieldClass, value) {
+    for (var i = 2; i < window.pins.pinsList.children.length; i++) {
+      if (parseInt(window.map.lodgingOffersList.children[i - 1].querySelector(fieldClass).textContent.substring(14), 10) === value) {
+        window.pins.pinsList.children[i].classList.remove("hidden");
+      } else {
+          window.pins.pinsList.children[i].classList.add("hidden");
+        }
+    }
+  };
+  //Выбор количества спальных мест
+  capacityFilter.addEventListener("change", function() {
+    if (window.map.lodgingOffersList.querySelector(".map__pin--active")) {
+      closePopup();
+    }
+    if (this.selectedIndex === 0) {
+      defaultPinList();
+    } else if (this.selectedIndex === 1) {
+        changePinsByCapacity(".popup__text--capacity", 1);
+      } else if (this.selectedIndex === 2) {
+          changePinsByCapacity(".popup__text--capacity", 2);
+        }
+  });
 
 })();
 
@@ -161,11 +280,10 @@
 //    wizard.score = 0;
 //  });
 //};
-//
+
+///////////////////////////////////
 ////Устранение дребезга
 //var lastTimeout;/
-
-////////////////////////////
 
 //if (lastTimeout) {
 //    window.clearTimeout(lastTimeout);
