@@ -55,17 +55,17 @@
           newFeature.setAttribute("class", "feature " + "feature--" + offersItem.offer.features[j]);
           offerElement.querySelector(".popup__features").appendChild(newFeature);
         }
-        //Описание жилья
-        offerElement.querySelector(".popup__description").textContent = offersItem.offer.description;
-        //Фотографии жилья
-        var photosElement = offerElement.querySelector(".popup__photos").children[0];
-        var photosTemplate = photosElement.cloneNode(true);
-        offerElement.querySelector(".popup__photos").removeChild(photosElement);
-        for (var k = 0; k < offersItem.offer.photos.length; k++) {
-          var newPhoto = photosTemplate.cloneNode(true);
-          newPhoto.querySelector("img").src = offersItem.offer.photos[k];
-          offerElement.querySelector(".popup__photos").appendChild(newPhoto);
-        }
+//        //Описание жилья (временно отключено)
+//        offerElement.querySelector(".popup__description").textContent = offersItem.offer.description;
+//        //Фотографии жилья
+//        var photosElement = offerElement.querySelector(".popup__photos").children[0];
+//        var photosTemplate = photosElement.cloneNode(true);
+//        offerElement.querySelector(".popup__photos").removeChild(photosElement);
+//        for (var k = 0; k < offersItem.offer.photos.length; k++) {
+//          var newPhoto = photosTemplate.cloneNode(true);
+//          newPhoto.querySelector("img").src = offersItem.offer.photos[k];
+//          offerElement.querySelector(".popup__photos").appendChild(newPhoto);
+//        }
         //Аватар автора объявления
         offerElement.querySelector(".popup__avatar").src = offersItem.author.avatar;
         //Скрытие окна с содержанием объявления по умолчанию
